@@ -30,21 +30,47 @@ data = req.query.s;
 }else{
   res.status(500).send("you have to provide a search").end();
   error= true;
-  console.error(`error: ${error}`)
+  console.error(`error: ${error}`);
 }
 });
 
-app.get('/movies/add', (req, res) => {
+app.get('/movies/create', (req, res) => {
   res.status().send();
   data = req.params;
   });
 
-app.get('/movies/get', (req, res) => {
+app.get('/movies/read', (req, res) => {
   res.status(200).send(movies);
   data = movies;
 });
 
-app.get('/movies/edit', (req, res) => {
+app.get('/movies/read/by-date', (req, res) => {
+  res.status(200).send(movies.sort((a, b) => b.year - a.year));
+  data = movies.sort((a, b) => b.year - a.year);
+});
+
+app.get('/movies/read/by-rating', (req, res) => {
+  res.status(200).send(movies.sort((a, b) => b.rating - a.rating));
+  data = movies.sort((a, b) => b.rating - a.rating);
+});
+
+app.get('/movies/read/by-title', (req, res) => {
+  res.status(200).send(movies.sort((a, b) => a.title.localeCompare(b.title)));
+  data = movies.sort((a, b) => a.title.localeCompare(b.title));
+});
+
+app.get('/movies/read/id/:id', (req, res) => {
+  if(req.params.id < movies.length){
+  res.status(200).send(movies[req.params.id]);
+  data = movies;
+  }else{
+    res.status(404).send(`the movie ${req.params.id} does not exist`);
+    error= true;
+    console.error(`error: ${error}`);
+  }
+});
+
+app.get('/movies/update', (req, res) => {
   res.status().send();
   data = req.params;
 });
