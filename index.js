@@ -92,9 +92,16 @@ app.get('/movies/update', (req, res) => {
   data = req.params;
 });
 
-app.get('/movies/delete', (req, res) => {
-  res.status().send();
-  data = req.params;
+app.get('/movies/delete/:id', (req, res) => {
+  if(req.params.id < movies.length){
+    movies.splice(req.params.id,1);
+    res.send(movies);
+    data = movies;
+  }else{
+    res.status(404).send(`the movie ${req.params.id} does not exist`);
+    error= true;
+    console.error(`error: ${error}`);
+  }
 });
 
 app.listen(port)
