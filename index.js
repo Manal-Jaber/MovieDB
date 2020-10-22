@@ -34,7 +34,7 @@ data = req.query.s;
 }
 });
 
-app.get('/movies/add', (req, res) => {
+app.post('/movies/add', (req, res) => {
   if(req.query.title == null || req.query.year == null || req.query.year/1000 <1 ||isNaN(req.query.year)){
     res.status(403).send("you cannot create a movie without providing a title and a year").end();
     error= true;
@@ -87,7 +87,7 @@ app.get('/movies/read/id/:id', (req, res) => {
   }
 });
 
-app.get('/movies/update/:id', (req, res) => {
+app.put('/movies/update/:id', (req, res) => {
   if(req.params.id < movies.length){
     if(req.query.title!=null){
       movies[req.params.id].title = req.query.title;
@@ -107,7 +107,7 @@ app.get('/movies/update/:id', (req, res) => {
   }
 });
 
-app.get('/movies/delete/:id', (req, res) => {
+app.delete('/movies/delete/:id', (req, res) => {
   if(req.params.id < movies.length){
     movies.splice(req.params.id,1);
     res.send(movies);
