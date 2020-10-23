@@ -2,6 +2,14 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+const mongoose = require('mongoose');
+  try {
+    mongoose.connect('mongodb+srv://Manal-Jaber:1234@cluster0.trk7h.mongodb.net/moviesdb?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
+      console.log('Connected to DB')
+    })
+  } catch (error) {
+    console.log(error.message)
+  }
 let date = new Date();
 let hours = date.getHours();
 let minutes = date.getMinutes();
@@ -14,6 +22,38 @@ const movies = [
   { title: 'Brazil', year: 1985, rating: 8 },
   { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
 ]
+
+let schema = mongoose.Schema(
+  {
+    title: {
+      type: String,
+    },
+    year:{
+      type: Number,
+      min: 1000,
+      max: 9999
+    },
+    rating:{
+      type: Number,
+      min: 0,
+      max: 10,
+      default: 4
+    }
+  }
+)
+const Movie = mongoose.model('Movie', schema);
+Movie.create({ title: 'Jaws', year: 1975, rating: 8 }, function (err, small) {
+  if (err) return handleError(err);
+});
+Movie.create( { title: 'Avatar', year: 2009, rating: 7.8 }, function (err, small) {
+  if (err) return handleError(err);
+});
+Movie.create( { title: 'Brazil', year: 1985, rating: 8 }, function (err, small) {
+  if (err) return handleError(err);
+});
+Movie.create( { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }, function (err, small) {
+  if (err) return handleError(err);
+});
 
 app.get('/', (req, res) => res.send('ok'))
 
@@ -46,6 +86,10 @@ app.post('/movies/add', (req, res) => {
     movies[movies.length-1].rating = 4;
     res.send(movies);
     data = movies;
+    //step12
+    Movie.create( movies[movies.length-1], function (err, small) {
+      if (err) return handleError(err);
+    });
   }else{
   movies.push();
   movies[movies.length-1].title = req.query.title;
@@ -53,6 +97,10 @@ app.post('/movies/add', (req, res) => {
   movies[movies.length-1].rating = req.query.rating;
   res.send(movies);
   data = movies;
+  //step12
+  Movie.create( movies[movies.length-1], function (err, small) {
+    if (err) return handleError(err);
+  });
   }
   });
 
@@ -100,6 +148,10 @@ app.put('/movies/update/:id', (req, res) => {
     }
     res.send(movies);
     data = movies;
+    //step12
+    Movie.updateOne( movies[req.params.id], function (err, small) {
+      if (err) return handleError(err);
+    });
   }else{
     res.status(404).send(`the movie ${req.params.id} does not exist`);
     error= true;
@@ -112,6 +164,10 @@ app.delete('/movies/delete/:id', (req, res) => {
     movies.splice(req.params.id,1);
     res.send(movies);
     data = movies;
+    //step12
+    Movie.deleteOne( movies[req.params.id], function (err, small) {
+      if (err) return handleError(err);
+    });
   }else{
     res.status(404).send(`the movie ${req.params.id} does not exist`);
     error= true;
@@ -119,4 +175,7 @@ app.delete('/movies/delete/:id', (req, res) => {
   }
 });
 
-app.listen(port)
+app.listen(port, () => {
+  console.log(`Listening to port: ${port}`);
+});
+
