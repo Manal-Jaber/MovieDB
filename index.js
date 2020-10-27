@@ -55,10 +55,10 @@ const Movie = mongoose.model('Movie', schema);
       newmovie = await movie.save();
 
       movie = new Movie ({ title: 'Brazil', year: 1985, rating: 8 });
-      newmovie = await movie.save();
+      newmovie = await movie.save();*/
 
       movie = new Movie ({ title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 });
-      newmovie = await movie.save();*/
+      newmovie = await movie.save();
     })
   } catch (error) {
     console.log(error.message)
@@ -326,8 +326,13 @@ app.delete('/movies/delete/:id', (req, res) => {
       res.status(404).send(`the movie ${req.params.id} does not exist`);
       /*error= true;
       console.error(`error: ${error}`);*/
-    }
-    else{
+    //step13-authentication
+    }else if(req.query.username== null || req.query.username == "" || req.query.password== null || req.query.password == "" ){
+    res.status(404).send(`please provide a username and password`);
+    }else if(users.some(user => 
+    (user.username == req.query.username && user.password == req.query.password))== false){
+    res.status(404).send(`please provide correct credentials`);
+  }else{
       //step12
       Movie.findOneAndDelete({ _id: req.params.id }, function (err, small) {
         if (err) return handleError(err);
